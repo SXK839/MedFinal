@@ -1,0 +1,10 @@
+server:
+  port: 8081
+spring:
+ datasource:
+  url: jdbc:postgresql://localhost:5432/patientdb
+  username: postgres
+  password: Postgresql
+ jpa:
+  hibernate:
+   ddl-auto: update

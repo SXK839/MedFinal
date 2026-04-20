@@ -1,0 +1,4 @@
+GitRepositoriesView.GitDirectories=C\:\\Users\\sxk839\\eclipse-workspace\\Diabetes_Project\\Diabetes_Project_Main\\patient-service\\.git;C\:\\Users\\sxk839\\eclipse-workspace\\Diabetes_Project\\notes-service\\.git;C\:\\Users\\sxk839\\eclipse-workspace\\Diabetes_Project\\Diabetes_Project_Main\\front-end-service\\.git;C\:\\Users\\sxk839\\eclipse-workspace\\Diabetes_Project\\Diabetes_Project_Main\\gateway-service\\.git;
+GitRepositoriesView.GitDirectories.relative=patient-service\\.git;C\:\\Users\\sxk839\\eclipse-workspace\\Diabetes_Project\\notes-service\\.git;front-end-service\\.git;gateway-service\\.git;
+core_autoIgnoreDerivedResources=false
+eclipse.preferences.version=1

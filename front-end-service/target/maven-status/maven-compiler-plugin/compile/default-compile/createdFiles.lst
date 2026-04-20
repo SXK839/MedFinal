@@ -1,0 +1,4 @@
+com\diabetes\frontendservice\PatientUIController.class
+com\diabetes\frontendservice\model\Patient.class
+com\diabetes\frontendservice\config\RestTemplateConfig.class
+com\diabetes\frontendservice\MainApp.class
