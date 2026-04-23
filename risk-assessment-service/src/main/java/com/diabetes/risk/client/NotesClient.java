@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @FeignClient(
-    name = "notes-service",
-    url = "http://localhost:8082"
-)
+	    name = "notes-service",
+	    url = "http://notes-service:8083"
+	)	
 public interface NotesClient {
 
     @GetMapping("/notes/patient/{patientId}")

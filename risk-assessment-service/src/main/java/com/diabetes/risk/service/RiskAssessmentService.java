@@ -5,11 +5,15 @@ import com.diabetes.risk.client.PatientClient;
 import com.diabetes.risk.client.dto.NoteDTO;
 import com.diabetes.risk.client.dto.PatientDTO;
 import com.diabetes.risk.domain.RiskLevel;
+import feign.FeignException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.Collections;
 
 @Service
 public class RiskAssessmentService {
@@ -23,9 +27,64 @@ public class RiskAssessmentService {
         this.notesClient = notesClient;
     }
 
+    private static final String[] TRIGGERS = {
+            "hemoglobin a1c",
+            "microalbumin",
+            "height",
+            "weight",
+            "smoking",
+            "abnormal",
+            "cholesterol",
+            "dizziness",
+            "relapse",
+            "reaction",
+            "antibody"
+    };
+
+    /**
+     * Assess diabetes risk for a patient.
+     */
     public RiskLevel assessRisk(Long patientId) {
-        PatientDTO patient = patientClient.getPatientById(patientId);
-        List<NoteDTO> notes = notesClient.getNotesByPatientId(patientId);
+
+        PatientDTO patient;
+        List<NoteDTO> notes;
+
+        // ✅ Fetch patient (REQUIRED)
+        try {
+            patient = patientClient.getPatientById(patientId);
+        } catch (FeignException.NotFound e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Patient not found with ID " + patientId
+            );
+        } catch (FeignException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "Patient service unavailable",
+                    e
+            );
+        }
+
+        if (patient == null || patient.getId() == null) {
+            throw new IllegalArgumentException(
+                "Unable to assess risk: patient not found with ID " + patientId
+            );
+        }
+
+        // ✅ Fetch notes (OPTIONAL — empty list if none)
+        try {
+            notes = notesClient.getNotesByPatientId(patientId);
+        } catch (FeignException e) {
+        	notes = Collections.emptyList(); // Notes failure should NOT block risk assessment
+        }
+
+        // ✅ Validate patient data
+        if (patient.getDateOfBirth() == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Patient date of birth is missing"
+            );
+        }
 
         int age = calculateAge(patient.getDateOfBirth());
         int triggerCount = countTriggerTerms(notes);
@@ -38,6 +97,37 @@ public class RiskAssessmentService {
         return Period.between(birthDate, LocalDate.now()).getYears();
     }
 
+    /**
+     * Counts how many trigger terms appear in physician notes.
+     */
+    private int countTriggerTerms(List<NoteDTO> notes) {
+
+        if (notes == null || notes.isEmpty()) {
+            return 0;
+        }
+
+        int count = 0;
+
+        for (NoteDTO note : notes) {
+            if (note == null || note.getNoteText() == null) {
+                continue;
+            }
+
+            String content = note.getNoteText().toLowerCase();
+
+            for (String trigger : TRIGGERS) {
+                if (content.contains(trigger)) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * Determine risk level according to business rules.
+     */
     private RiskLevel determineRisk(int age, String gender, int triggers) {
 
         if (age < 30) {
@@ -55,33 +145,5 @@ public class RiskAssessmentService {
         }
 
         return RiskLevel.NONE;
-    }
-
-    private static final String[] TRIGGERS = {
-            "hemoglobin a1c",
-            "microalbumin",
-            "height",
-            "weight",
-            "smoking",
-            "abnormal",
-            "cholesterol",
-            "dizziness",
-            "relapse",
-            "reaction",
-            "antibody"
-    };
-
-    private int countTriggerTerms(List<NoteDTO> notes) {
-        int count = 0;
-
-        for (NoteDTO note : notes) {
-            String content = note.getContent().toLowerCase();
-            for (String trigger : TRIGGERS) {
-                if (content.contains(trigger)) {
-                    count++;
-                }
-            }
-        }
-        return count;
     }
 }

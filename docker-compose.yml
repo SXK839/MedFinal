@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: patient-postgres
+    environment:
+      POSTGRES_DB: patientdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Postgresql
+    ports:
+      - "5432:5432"
+    volumes:
+      - patient_pgdata:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:6
+    container_name: notes-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8081:8081"
+
+  patient-service:
+    build: ./patient-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres
+      - auth-service
+
+  notes-service:
+    build:
+      context: ../notes-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mongo
+
+  risk-assessment-service:
+    build: ./risk-assessment-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - patient-service
+      - notes-service
+
+  gateway-service:
+    build: ./gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service
+      - patient-service
+      - notes-service
+      - risk-assessment-service
+
+volumes:
+  patient_pgdata:
+  mongo_data:

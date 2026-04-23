@@ -6,24 +6,21 @@ spring:
     gateway:
       routes:
         - id: auth
-          uri: http://localhost:8081
+          uri: http://auth-service:8081
           predicates:
             - Path=/auth/**
 
         - id: patient
-          uri: http://localhost:8082
+          uri: http://patient-service:8082
           predicates:
-            - Path=/patients/** 
+            - Path=/patients/**
 
-        - id: patient
-          uri: http://localhost:8083
+        - id: notes
+          uri: http://notes-service:8083
           predicates:
             - Path=/notes/**
 
-        - id: risk-assessment-service
-          uri: http://localhost:8084
+        - id: risk
+          uri: http://risk-assessment-service:8084
           predicates:
-            - Path=/assess/**
-
-jwt:
-  secret: diabetes-secret-key-32-bytes-long!
+            - Path=/assess-risk/**

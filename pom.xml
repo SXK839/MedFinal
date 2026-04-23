@@ -10,6 +10,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+	    <module>auth-service</module>
 		<module>patient-service</module>
 		<module>front-end-service</module>
 		<module>gateway-service</module>

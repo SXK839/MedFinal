@@ -2,11 +2,13 @@ package com.diabetes.risk.client.dto;
 
 public class NoteDTO {
 
-    private String id;
-    private Long patientId;
-    private String content;
+    private String noteText;
 
-    public String getContent() {
-        return content;
+    public String getNoteText() {
+        return noteText;
+    }
+
+    public void setNoteText(String noteText) {
+        this.noteText = noteText;
     }
 }

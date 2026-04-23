@@ -1,42 +1,71 @@
 package com.diabetes.patientservice;
 
-import org.springframework.web.bind.annotation.*;
-
 import com.diabetes.patientservice.model.Patient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.NoSuchElementException;
-import java.util.*;
-import org.springframework.beans.factory.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/patients")
 public class PatientController {
-	@Autowired
-	PatientRepository r;
 
-	@GetMapping
-	public List<Patient> all() {
-		return r.findAll();
-	}
+    @Autowired
+    private PatientRepository r;
 
-	@PostMapping
-	public Patient add(@RequestBody Patient p) {
-		return r.save(p);
-	}
+    // ✅ Get all patients
+    @GetMapping
+    public List<Patient> all() {
+        return r.findAll();
+    }
 
-	@DeleteMapping("/{id}")
-	public void delete(@PathVariable Long id) {
-		r.deleteById(id);
-	}
+    // ✅ Add new patient
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Patient add(@RequestBody Patient patient) {
+        return r.save(patient);
+    }
 
-	@GetMapping("/{id}")
-	public Patient one(@PathVariable Long id) {
-		return r.findById(id).orElseThrow(() -> new NoSuchElementException("Patient not found: " + id));
-	}
+    // ✅ Get patient by ID
+    @GetMapping("/{patientId}")
+    public ResponseEntity<Patient> one(
+            @PathVariable("patientId") Long patientId) {
 
-	@PutMapping("/{id}")
-	public Patient upd(@PathVariable Long id, @RequestBody Patient p) {
-		p.setId(id);
-		return r.save(p);
-	}
+        return r.findById(patientId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // ✅ Update patient
+    @PutMapping("/{patientId}")
+    public ResponseEntity<Patient> update(
+            @PathVariable("patientId") Long patientId,
+            @RequestBody Patient patient) {
+
+        if (!r.existsById(patientId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        patient.setId(patientId);
+        return ResponseEntity.ok(r.save(patient));
+    }
+
+    // ✅ Delete patient
+    @DeleteMapping("/{patientId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(
+            @PathVariable("patientId") Long patientId) {
+
+        if (!r.existsById(patientId)) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Patient not found with id " + patientId
+            );
+        }
+
+        r.deleteById(patientId);
+    }
 }

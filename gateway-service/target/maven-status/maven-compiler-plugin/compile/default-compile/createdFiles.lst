@@ -1,3 +1,2 @@
-com\diabetes\gatewayservice\MainApp.class
-com\diabetes\gatewayservice\security\JwtGatewayFilter.class
 com\diabetes\gatewayservice\security\SecurityConfig.class
+com\diabetes\gatewayservice\MainApp.class
