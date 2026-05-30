@@ -1,6 +1,25 @@
 server:
   port: 8084
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 10
 
 spring:
   application:
     name: risk-assessment-service
+
+  main:
+    lazy-initialization: true   # ✅ Green: reduces startup memory & CPU
+
+logging:
+  level:
+    root: WARN                  # ✅ Green: reduces excessive logging
+    org.springframework: WARN
+    com.risk: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info    # ✅ Lightweight monitoring

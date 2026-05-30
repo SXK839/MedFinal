@@ -1,14 +1,36 @@
 server:
   port: 8082
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 10
 
 spring:
+  main:
+    lazy-initialization: true   # Green: reduces memory at startup
+
   datasource:
     url: jdbc:postgresql://postgres:5432/patientdb
     username: postgres
     password: Postgresql
+    hikari:
+      maximum-pool-size: 5      # Green: limits DB usage
+      minimum-idle: 2
+      idle-timeout: 30000
+
   jpa:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+logging:
+  level:
+    root: WARN
+    org.springframework: WARN
+    com.diabetes: INFO
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

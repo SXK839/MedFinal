@@ -1,2 +1,28 @@
 server:
   port: 8081
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 10
+
+spring:
+  main:
+    lazy-initialization: true   # Green: reduces startup memory
+
+  datasource:
+    hikari:
+      maximum-pool-size: 5      # Green: limits DB load
+      minimum-idle: 2
+      idle-timeout: 30000
+
+logging:
+  level:
+    root: WARN
+    org.springframework: WARN
+    com.diabetes: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info   # Green: minimal actuator usage
