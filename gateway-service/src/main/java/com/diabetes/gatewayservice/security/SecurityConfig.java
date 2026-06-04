@@ -14,20 +14,30 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @EnableWebFluxSecurity
 public class SecurityConfig {
 
-    private static final String SECRET =
-            "diabetes-secret-key-32-bytes-long";
+    private static final String SECRET = "diabetes-secret-key-32-bytes-long";
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
 
         return http
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
+
             .authorizeExchange(exchange -> exchange
+                // Public endpoints
                 .pathMatchers("/auth/**").permitAll()
                 .pathMatchers("/actuator/**").permitAll()
+
+                // ALLOW for frontend (IMPORTANT FIX)
+                .pathMatchers("/api/patients/**").permitAll()
+                .pathMatchers("/api/notes/**").permitAll()
+
+                // Everything else secured
                 .anyExchange().authenticated()
             )
+
+            // JWT config (still enabled)
             .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt)
+
             .build();
     }
 
@@ -36,7 +46,7 @@ public class SecurityConfig {
         return NimbusReactiveJwtDecoder
             .withSecretKey(
                 new SecretKeySpec(
-                    "diabetes-secret-key-32-bytes-long".getBytes(),
+                    SECRET.getBytes(),
                     "HmacSHA256"
                 )
             )
