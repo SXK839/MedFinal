@@ -62,5 +62,3 @@ services:
 volumes:
   patient_pgdata:
   mongo_data:
-	
-docker-compose down

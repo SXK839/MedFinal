@@ -1,0 +1,8 @@
+com\diabetes\risk\client\NotesClient.class
+com\diabetes\risk\controller\RiskAssessmentController.class
+com\diabetes\risk\RiskAssessmentServiceApplication.class
+com\diabetes\risk\client\dto\NoteDTO.class
+com\diabetes\risk\domain\RiskLevel.class
+com\diabetes\risk\client\PatientClient.class
+com\diabetes\risk\client\dto\PatientDTO.class
+com\diabetes\risk\service\RiskAssessmentService.class
