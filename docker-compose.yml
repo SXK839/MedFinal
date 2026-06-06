@@ -1,4 +1,7 @@
+version: '3.8'
+
 services:
+
   postgres:
     image: postgres:15
     container_name: patient-postgres
@@ -48,6 +51,13 @@ services:
     depends_on:
       - patient-service
       - notes-service
+
+  frontend-service:
+    build: ./front-end-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - gateway-service
 
   gateway-service:
     build: ./gateway-service

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Patient Details</title>
+</head>
+<body>
+
+<h2>Patient Details</h2>
+
+<!-- Patient Information -->
+<p><strong>ID:</strong> <span th:text="${patient.id}"></span></p>
+<p><strong>First Name:</strong> <span th:text="${patient.firstName}"></span></p>
+<p><strong>Last Name:</strong> <span th:text="${patient.lastName}"></span></p>
+<p><strong>Date of Birth:</strong> <span th:text="${patient.dateOfBirth}"></span></p>
+<p><strong>Gender:</strong> <span th:text="${patient.gender}"></span></p>
+
+<hr>
+
+<!-- Notes Section (Sprint 2) -->
+
+<h3>Patient Notes</h3>
+
+<table border="1">
+    <tr>
+        <th>Physician</th>
+        <th>Note</th>
+        <th>Date</th>
+    </tr>
+
+    <tr th:each="n : ${notes}">
+        <td th:text="${n.physicianName}"></td>
+        <td th:text="${n.noteText}"></td>
+        <td th:text="${n.visitDate}"></td>
+    </tr>
+
+    <tr th:if="${notes == null or notes.isEmpty()}">
+        <td colspan="3">No notes available</td>
+    </tr>
+</table>
+
+<br>
+
+<!-- ✅ Navigation -->
+<a href="/patients">⬅ Back to Patients</a>
+
+</body>
+</html>

@@ -4,10 +4,13 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
+
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
@@ -23,19 +26,19 @@ public class SecurityConfig {
             .csrf(ServerHttpSecurity.CsrfSpec::disable)
 
             .authorizeExchange(exchange -> exchange
-                // Public endpoints
+                // ✅ Public endpoints
                 .pathMatchers("/auth/**").permitAll()
                 .pathMatchers("/actuator/**").permitAll()
 
-                // ALLOW for frontend (IMPORTANT FIX)
-                .pathMatchers("/api/patients/**").permitAll()
-                .pathMatchers("/api/notes/**").permitAll()
+                // ✅ CRITICAL FIX (frontend calls these)
+                .pathMatchers("/patients/**").permitAll()
+                .pathMatchers("/notes/**").permitAll()
 
-                // Everything else secured
+                // ✅ Everything else secured
                 .anyExchange().authenticated()
             )
 
-            // JWT config (still enabled)
+            // ✅ JWT enabled (future use)
             .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt)
 
             .build();

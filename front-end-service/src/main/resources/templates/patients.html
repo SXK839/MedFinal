@@ -17,27 +17,31 @@
     </tr>
 
     <tr th:each="p : ${patients}">
-        <td th:text="${p.firstName}"></td>
+        
+        <td>
+            <a th:href="@{/patients/{id}(id=${p.id})}">
+                <span th:text="${p.firstName}"></span>
+            </a>
+        </td>
+
         <td th:text="${p.lastName}"></td>
         <td th:text="${p.dateOfBirth}"></td>
         <td th:text="${p.gender}"></td>
 
         <td>
-            <!-- ✅ SAFE EDIT -->
-            <a th:href="'/patients/edit/' + ${p.id}">Edit</a>
-            |
-            <!-- ✅ SAFE DELETE -->
-            <a th:href="'/patients/delete/' + ${p.id}"
-               onclick="return confirm('Are you sure?');">
-                Delete
-            </a>
+            <a th:href="@{/patients/edit/{id}(id=${p.id})}">Edit</a> |
+            
+            <a th:href="@{/patients/delete/{id}(id=${p.id})}"
+               onclick="return confirm('Are you sure?')">Delete</a>
+
         </td>
+
     </tr>
 </table>
 
-<br/>
+<br>
 
-<a th:href="'/patients/new'">Add</a>
+<a th:href="@{/patients/new}">Add New Patient</a>
 
 </body>
 </html>

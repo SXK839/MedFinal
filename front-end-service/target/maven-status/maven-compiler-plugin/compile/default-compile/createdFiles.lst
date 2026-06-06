@@ -1,4 +1,6 @@
-com\diabetes\frontendservice\PatientUIController.class
 com\diabetes\frontendservice\model\Patient.class
 com\diabetes\frontendservice\config\RestTemplateConfig.class
+com\diabetes\frontendservice\config\SecurityConfig.class
+com\diabetes\frontendservice\controller\PatientController.class
 com\diabetes\frontendservice\MainApp.class
+com\diabetes\frontendservice\model\Note.class
