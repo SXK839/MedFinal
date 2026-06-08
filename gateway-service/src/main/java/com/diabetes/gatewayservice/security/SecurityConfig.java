@@ -33,7 +33,8 @@ public class SecurityConfig {
                 // ✅ CRITICAL FIX (frontend calls these)
                 .pathMatchers("/patients/**").permitAll()
                 .pathMatchers("/notes/**").permitAll()
-
+                .pathMatchers("/assess-risk/**").permitAll()
+                
                 // ✅ Everything else secured
                 .anyExchange().authenticated()
             )

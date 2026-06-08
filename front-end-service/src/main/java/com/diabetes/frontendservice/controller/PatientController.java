@@ -23,6 +23,7 @@ public class PatientController {
     // ✅ Gateway URLs
     private final String PATIENT_URL = "http://gateway-service:8080/patients";
     private final String NOTES_URL   = "http://gateway-service:8080/notes";
+    private static final String RISK_URL = "http://gateway-service:8080/assess-risk";
 
     // ✅ LIST PAGE
     @GetMapping("/patients")
@@ -59,6 +60,12 @@ public class PatientController {
                 notesApiUrl,
                 Note[].class
         );
+        
+     // CALL RISK SERVICE
+        String risk = restTemplate.getForObject(
+                RISK_URL + "/" + id,
+                String.class
+        );
 
         List<Note> notes = (notesArray != null)
                 ? Arrays.asList(notesArray)
@@ -66,6 +73,7 @@ public class PatientController {
 
         model.addAttribute("patient", patient);
         model.addAttribute("notes", notes);
+        model.addAttribute("risk", risk);
 
         return "patient-details";
     }
